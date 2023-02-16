@@ -40,7 +40,7 @@ public class FilesController : ControllerBase
         return Ok(item);
     }    
     [HttpGet]  
-    [Route("getFiles")]  
+    [Route("getfiles")]  
     public IActionResult GetFiles()
     {
         return Ok("Hola mundo");
@@ -48,7 +48,7 @@ public class FilesController : ControllerBase
 
 
     [HttpGet]  
-    [Route("getbyserialnumber/{serialNumber}")]           
+    [Route("getbyserialnumber/{serialnumber}")]           
     public async Task<IActionResult> GetBySerialNumber(string serialNumber)
     {
         var item = await _service.GetBySerialNumber(serialNumber);
@@ -60,7 +60,7 @@ public class FilesController : ControllerBase
     }
 
     [HttpPost]
-    [Route("UploadFile")]
+    [Route("uploadfile")]
     public async Task<IActionResult> UploadFile([FromForm] IFormFile file)
     {
         //check if file extension is .DAT or .dat

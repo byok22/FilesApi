@@ -8,10 +8,18 @@ namespace FilesApi.Aplication.FileRepository.Repositories
     public class FileRepositoryRepo : IGenericRepository<FileRepositoryModel>
     {
         StoreProceduresRepo _storeProceduresRepo = new StoreProceduresRepo();
+
+        /// <summary>
+        /// Add
+        /// </summary>
+        /// <param name="entity"></param>
+        /// <returns>FileRepositoryModel</returns>        
         public Task<FileRepositoryModel> Add(FileRepositoryModel entity)
         {
             return Task.FromResult(_storeProceduresRepo.InsertAndGetFileRepositoryModel(entity));            
         }
+
+
 
         public Task Delete(FileRepositoryModel entity)
         {
@@ -22,6 +30,13 @@ namespace FilesApi.Aplication.FileRepository.Repositories
         {
             throw new NotImplementedException();
         }
+
+        
+        /// <summary>
+        /// GetById
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns>FileRepositoryModel</returns>
 
         public Task<FileRepositoryModel> GetById(int id)
         {
@@ -39,15 +54,26 @@ namespace FilesApi.Aplication.FileRepository.Repositories
             });
          
         }
+
+
+        /// <summary>
+        /// GetBySerialNumber
+        /// </summary>
+        /// <param name="serialNumber"></param>
+        /// <returns>FileRepositoryModel</returns>        
         public Task<FileRepositoryModel> GetBySerialNumber(string serialNumber)
         {
             return Task.FromResult(_storeProceduresRepo.GetFileRepositoryBySerialNumer(serialNumber));         
         }
 
+
+
         public Task Save()
         {
             throw new NotImplementedException();
         }
+
+
 
         public Task Update(FileRepositoryModel entity)
         {

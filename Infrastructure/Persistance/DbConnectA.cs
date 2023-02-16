@@ -23,7 +23,13 @@ namespace FilesApi.Infrastructure.Persistansce
         {
             conn = new SqlConnection(ConnectionString);
         }
+
+
         //get open conection
+        /// <summary>
+        /// GetConnection
+        /// </summary>
+        /// <returns>SqlConnection</returns>
         public SqlConnection GetConnection()
         {
             if (conn.State == ConnectionState.Closed)
@@ -34,6 +40,9 @@ namespace FilesApi.Infrastructure.Persistansce
         }
     
         //get close conection
+        /// <summary>
+        /// CloseConnection
+        /// </summary>        
         public void CloseConnection()
         {
             if (conn.State == ConnectionState.Open)
@@ -43,6 +52,11 @@ namespace FilesApi.Infrastructure.Persistansce
         }
 
         //get data from database
+        /// <summary>
+        /// GetData
+        /// </summary>
+        /// <param name="sql"></param>
+        /// <returns>DataTable</returns>
         public DataTable GetData(string sql)
         {
             DataTable dt = new DataTable();
@@ -51,7 +65,13 @@ namespace FilesApi.Infrastructure.Persistansce
             CloseConnection();
             return dt;
         }
+
+
         //save data to database
+        /// <summary>
+        /// SaveData
+        /// </summary>
+        /// <param name="sql"></param>            
         public void SaveData(string sql)
         {
             SqlCommand cmd = new SqlCommand(sql, GetConnection());
@@ -60,6 +80,12 @@ namespace FilesApi.Infrastructure.Persistansce
         }
 
         // get data from steore procedure 
+        /// <summary>
+        /// GetDataSP
+        /// </summary>
+        /// <param name="spName"></param>
+        /// <param name="param"></param>
+        /// <returns>DataTable</returns>        
         public DataTable GetDataSP(string spName, SqlParameter[] param)
         {
             DataTable dt = new DataTable();
@@ -74,6 +100,9 @@ namespace FilesApi.Infrastructure.Persistansce
         }
 
         //eject non query
+        /// <summary>
+        /// ExecuteNonQuery
+        /// </summary>
         public void ExecuteNonQuery(string sql)
         {
             SqlCommand cmd = new SqlCommand(sql, GetConnection());

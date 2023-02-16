@@ -15,6 +15,10 @@ public class DefaultController : ControllerBase
         _logger = logger;
     }
 
+    /// <summary>
+    /// Index
+    /// </summary>
+    /// <returns></returns>
     [HttpGet]
     [Route("/")]
     [Route("/docs")]

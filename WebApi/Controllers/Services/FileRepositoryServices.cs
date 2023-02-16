@@ -8,16 +8,22 @@ namespace FilesApi.Controllers.Services
         public  FileRepositoryRepo _repository = new FileRepositoryRepo();
 
         public FileRepositoryService()
-        {
-           
-
-            
+        {                       
         }
+        /// <summary>
+        /// Create
+        /// </summary>
+        /// <param name="entity"></param>
+        /// <returns>Task<FileRepositoryModel></returns>
         public async Task<FileRepositoryModel> Create(FileRepositoryModel entity)
         {
             return await _repository.Add(entity);
         }
 
+        /// <summary>
+        /// Delete
+        /// </summary>
+        /// <param name="entity"></param>
         public Task Delete(FileRepositoryModel entity)
         {
             throw new NotImplementedException();
@@ -27,6 +33,12 @@ namespace FilesApi.Controllers.Services
         {
             throw new NotImplementedException();
         }
+
+        /// <summary>
+        /// GetBySerialNumber
+        /// </summary>
+        /// <param name="serialNumber"></param>
+        /// <returns>Task<FileRepositoryModel></returns>
         public async Task<FileRepositoryModel> GetBySerialNumber(string serialNumber)
         {
           return  await _repository.GetBySerialNumber(serialNumber);

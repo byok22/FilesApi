@@ -12,9 +12,7 @@ namespace FilesApi.Infrastructure.Persistansce.StoreProcedureRepo
 {
     public class StoreProceduresRepo
     { 
-        private DbConnectA dba = new DbConnectA();
-        //Get List of up_GetProcessModel from up_GetProcess stored procedure     
-
+        private DbConnectA dba = new DbConnectA();       
 
         /// <summary>
         /// InsertAndGetUserActivity
@@ -32,16 +30,17 @@ namespace FilesApi.Infrastructure.Persistansce.StoreProcedureRepo
             parameters[2] = parameter3;
             parameters[3] = parameter4;
             DataTable dt = dba.GetDataSP("up_InsertAR_UserActivity", parameters);
-            UserActivity userActivityModel = 
-            dt.AsEnumerable().Select(m => new UserActivity()
+            UserActivity userActivityObj = new UserActivity();
+            foreach (DataRow row in dt.Rows)
             {
-                UserNT = m.Field<string>("UserNT"),
-                FkProcess = m.Field<int>("FkProcess"),
-                Activity = m.Field<string>("Activity"),
-                Terminal = m.Field<string>("Terminal"),
-                UpdatedAt = m.Field<DateTime>("UpdatedAt"),
-            }).FirstOrDefault();
-            return userActivityModel;
+                userActivityObj.UserNT = Convert.ToString(row["UserNT"]);
+                userActivityObj.FkProcess = Convert.ToInt32(row["FkProcess"]);
+                userActivityObj.Activity = Convert.ToString(row["Activity"]);
+                userActivityObj.Terminal = Convert.ToString(row["Terminal"]);
+                userActivityObj.UpdatedAt = Convert.ToDateTime(row["UpdatedAt"]);     
+                break;           
+            }          
+            return userActivityObj;
         }
 
         /// <summary>
@@ -54,15 +53,18 @@ namespace FilesApi.Infrastructure.Persistansce.StoreProcedureRepo
             parameters[0] = parameter1;
             DataTable dt = dba.GetDataSP("up_GetFileRepositoryBySerial", parameters);
             FileRepositoryModel FileRepositoryModel = new FileRepositoryModel();
-            FileRepositoryModel = dt.AsEnumerable().Select(m => new FileRepositoryModel()
+            foreach (DataRow row in dt.Rows)
             {
-                FileName = m.Field<string>("FileName"),
-                SerialNumber = m.Field<string>("SerialNumber"),
-                FKProcess = m.Field<int>("FKProcess"),
-                Source = m.Field<string>("Source"),
-                FileData = m.Field<byte[]>("FileData"),              
-                UpdatedAt = m.Field<DateTime>("UpdatedAt"),
-            }).FirstOrDefault();
+                FileRepositoryModel.PKFile = row["PKFile"]!=null? Convert.ToInt32(row["PKFile"]): 0;
+                FileRepositoryModel.FileName = Convert.ToString(row["FileName"]);
+                FileRepositoryModel.SerialNumber = Convert.ToString(row["SerialNumber"]);
+                FileRepositoryModel.FKProcess = Convert.ToInt32(row["FKProcess"]);
+                FileRepositoryModel.Source = Convert.ToString(row["Source"]);
+                FileRepositoryModel.FileData = row["FileData"] != null ? (byte[])row["FileData"] : null;
+                FileRepositoryModel.UpdatedAt = Convert.ToDateTime(row["UpdatedAt"]);                              
+                break;
+            }         
+           
             return FileRepositoryModel!=null? FileRepositoryModel: new FileRepositoryModel();
         }
 
@@ -86,16 +88,18 @@ namespace FilesApi.Infrastructure.Persistansce.StoreProcedureRepo
             parameters[3] = parameter4;
             parameters[4] = parameter5;
             DataTable dt = dba.GetDataSP("up_InsertAR_FileRepository", parameters);
-            FileRepositoryModel FileRepositoryModel = dt.AsEnumerable().Select(m => new FileRepositoryModel()
+            FileRepositoryModel FileRepositoryModel = new FileRepositoryModel();
+            foreach (DataRow row in dt.Rows)
             {
-                PKFile = m.Field<int>("PKFile"), 
-                FileName = m.Field<string>("FileName"),
-                SerialNumber = m.Field<string>("SerialNumber"),
-                FKProcess = m.Field<int>("FKProcess"),
-                Source = m.Field<string>("Source"),
-                FileData = m.Field<byte[]>("FileData"),             
-                UpdatedAt = m.Field<DateTime>("UpdatedAt"),
-            }).FirstOrDefault();
+                FileRepositoryModel.PKFile = row["PKFile"] != null ? Convert.ToInt32(row["PKFile"]) : 0;
+                FileRepositoryModel.FileName = Convert.ToString(row["FileName"]);
+                FileRepositoryModel.SerialNumber = Convert.ToString(row["SerialNumber"]);
+                FileRepositoryModel.FKProcess = Convert.ToInt32(row["FKProcess"]);
+                FileRepositoryModel.Source = Convert.ToString(row["Source"]);
+                FileRepositoryModel.FileData = row["FileData"] != null ? (byte[])row["FileData"] : null;
+                FileRepositoryModel.UpdatedAt = Convert.ToDateTime(row["UpdatedAt"]);
+                break;
+            }          
             return FileRepositoryModel;
         }
 
