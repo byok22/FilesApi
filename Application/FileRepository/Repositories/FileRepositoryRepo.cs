@@ -1,4 +1,5 @@
 using System;
+using System.IO.Compression;
 using FilesApi.Domain.Entities;
 using FilesApi.Infrastructure.Persistansce.StoreProcedureRepo;
 
@@ -66,8 +67,40 @@ namespace FilesApi.Aplication.FileRepository.Repositories
             return Task.FromResult(_storeProceduresRepo.GetFileRepositoryBySerialNumer(serialNumber));         
         }
 
+      
 
+        //get zipfiles From Tuple<string, byte[]> string = serialNumber, byte[] = fileData
+        public Task<byte[]> GetZipFilesFromList(string serialNumbers)
+        {
+            var listFiles = _storeProceduresRepo.GetFilesFromList(serialNumbers);
+            List<Tuple<string, byte[]>> listSerialAndFileData = new List<Tuple<string, byte[]>>();
+            foreach (var item in listFiles)
+            {
+                listSerialAndFileData.Add(new Tuple<string, byte[]>(item.SerialNumber, item.FileData));
+            }
+            return CreateZipFile(listSerialAndFileData);
+        }
+        public Task<byte[]> CreateZipFile(List<Tuple<string, byte[]>> listSerialAndFileData)
+        {
+            using (MemoryStream memoryStream = new MemoryStream())
+            {
+                using (ZipArchive zipArchive = new ZipArchive(memoryStream, ZipArchiveMode.Create, true))
+                {
+                    foreach (var item in listSerialAndFileData)
+                    {
+                        ZipArchiveEntry zipArchiveEntry = zipArchive.CreateEntry(item.Item1 + ".dat");
+                        using (BinaryWriter binaryWriter = new BinaryWriter(zipArchiveEntry.Open()))
+                        {
+                            binaryWriter.Write(item.Item2);
+                        }
+                    }
+                }
+                return Task.FromResult(memoryStream.ToArray());
+            }
+        }
+        
 
+       
         public Task Save()
         {
             throw new NotImplementedException();

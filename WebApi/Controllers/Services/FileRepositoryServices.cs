@@ -44,6 +44,12 @@ namespace FilesApi.Controllers.Services
           return  await _repository.GetBySerialNumber(serialNumber);
           
         }
+
+    // Get zip file from List of SerialNumbers
+        public async Task<byte[]> GetZipFileBySerialNumber(string serialNumbers)
+        {
+            return await _repository.GetZipFilesFromList(serialNumbers);
+        }
        
 
         public Task<IEnumerable<FileRepositoryModel>> GetAll()

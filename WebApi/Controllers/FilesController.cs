@@ -1,6 +1,8 @@
 using FilesApi.Controllers.Services;
 using FilesApi.Domain.Entities;
+using FilesApi.Domain.Functions;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 
 namespace FilesApi.Controllers;
 
@@ -8,12 +10,10 @@ namespace FilesApi.Controllers;
 [Route("[controller]")]
 public class FilesController : ControllerBase
 {
-   
+
 
     private readonly ILogger<DefaultController> _logger;
-
     private readonly FileRepositoryService _service = new FileRepositoryService();
-
     public FilesController(ILogger<DefaultController> logger)
     {
         _logger = logger;
@@ -23,7 +23,7 @@ public class FilesController : ControllerBase
     public async Task<IActionResult> Create([FromBody] FileRepositoryModel file)
     {
         _logger.LogInformation("Creating file");
-       await _service.Create(file);
+        await _service.Create(file);
         return Ok(file);
     }
 
@@ -38,17 +38,17 @@ public class FilesController : ControllerBase
             return NotFound();
         }
         return Ok(item);
-    }    
-    [HttpGet]  
-    [Route("getfiles")]  
+    }
+    [HttpGet]
+    [Route("getfiles")]
     public IActionResult GetFiles()
     {
         return Ok("Hola mundo");
     }
 
 
-    [HttpGet]  
-    [Route("getbyserialnumber/{serialnumber}")]           
+    [HttpGet]
+    [Route("getbyserialnumber/{serialnumber}")]
     public async Task<IActionResult> GetBySerialNumber(string serialNumber)
     {
         var item = await _service.GetBySerialNumber(serialNumber);
@@ -77,14 +77,31 @@ public class FilesController : ControllerBase
         }
         FileRepositoryModel fileToUpload = new FileRepositoryModel();
         fileToUpload.FileData = fileBytes;
-        fileToUpload.FileName = file.FileName;      
+        fileToUpload.FileName = file.FileName;
         //Get File name without extension        
         fileToUpload.SerialNumber = Path.GetFileNameWithoutExtension(file.FileName);
         fileToUpload.UpdatedAt = DateTime.Now;
         //Get Source Fiel from body of http request
         fileToUpload.Source = Request.Form["Source"];
-        await _service.Create(fileToUpload);      
+        await _service.Create(fileToUpload);
         return Ok(fileToUpload);
     }
+
+   /// <summary>
+    /// GetZipFilesFromList
+    /// </summary>
+    /// <param name="serialNumbers">Serial numbers separated by comma</param>
+    /// <returns></returns>
+    [HttpPost]
+    [Route("getzipfilesfromlist")]
+    public async Task<IActionResult> GetZipFilesFromList()
+    {
+        Dictionary<string, string> dictionary = JsonCast.GetDictionaryFromBody(Request);
+        var serialNumbers = dictionary["serialNumbers"];
+        var zipFile = await _service.GetZipFileBySerialNumber(serialNumbers);
+        return File(zipFile, "application/zip", "Files.zip");
+    }
+
+
 }
-   
+

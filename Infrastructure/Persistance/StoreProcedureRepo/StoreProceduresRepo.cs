@@ -68,6 +68,29 @@ namespace FilesApi.Infrastructure.Persistansce.StoreProcedureRepo
             return FileRepositoryModel!=null? FileRepositoryModel: new FileRepositoryModel();
         }
 
+        public List<FileRepositoryModel> GetFilesFromList(string listSerials)
+        {
+           
+            SqlParameter parameter1 = new SqlParameter("@SerialNumbers", listSerials);
+            SqlParameter[] parameters = new SqlParameter[1];
+            parameters[0] = parameter1;
+            DataTable dt = dba.GetDataSP("up_GetFilesFromList", parameters);
+            List<FileRepositoryModel> FileRepositoryModelList = new List<FileRepositoryModel>();
+            foreach (DataRow row in dt.Rows)
+            {
+                FileRepositoryModel FileRepositoryModel = new FileRepositoryModel();
+                FileRepositoryModel.PKFile = row["PKFile"] != null ? Convert.ToInt32(row["PKFile"]) : 0;
+                FileRepositoryModel.FileName = Convert.ToString(row["FileName"]);
+                FileRepositoryModel.SerialNumber = Convert.ToString(row["SerialNumber"]);
+                FileRepositoryModel.FKProcess = Convert.ToInt32(row["FKProcess"]);
+                FileRepositoryModel.Source = Convert.ToString(row["Source"]);
+                FileRepositoryModel.FileData = row["FileData"] != null ? (byte[])row["FileData"] : null;
+                FileRepositoryModel.UpdatedAt = Convert.ToDateTime(row["UpdatedAt"]);
+                FileRepositoryModelList.Add(FileRepositoryModel);
+            }
+                return FileRepositoryModelList;          
+        }
+
         /// <summary>
         /// InsertAndGetImageRepositoryModel
         /// </summary>
